@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEATHER APP</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Nunito:ital,wght@0,300;0,400;1,300;1,400&family=Plus+Jakarta+Sans:wght@400;600&family=Poppins:wght@200;300;400;500&family=Ubuntu:wght@500&display=swap"
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+</head>
+
+<body>
+    <div class="main">
+        <div id="header">
+            <h1>good afternoon, <span>govind</span></h1>
+            <h1 id="time">ram</h1>
+            <div class="inn">
+            <input type="text" placeholder="Enter your city name" class="cityName" id="input">
+            <button type="submit" class="submitButton">Submit</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <img src="output-onlinegiftools.gif" alt="">
+            <h1 id="city">delhi</h1>
+            <div class="container2"></div>
+        </div>
+    </div>
+
+</body>
+<script>
+    //query selectors
+    var cityInput = document.querySelector('.cityName');
+    var btn1 = document.querySelector('.submitButton');
+    var time = document.querySelector('#time');
+    var city = document.querySelector('#city');
+
+
+    function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
+}
+
+
+
+
+    //event Listeners
+    btn1.addEventListener('click', function (name) {
+
+        time.textContent =formatAMPM(new Date())
+
+        city.textContent = cityInput.value
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityInput.value}&appid=3f659310ceadc8ea6ca3fbcbaa3d93cb`)
+            .then(result => result.json())
+            .then(data => {
+                console.log(data);
+                let result = `<div class="fetchdata">
+
+                <h1> <i class="fa fa-thermometer"></i>${Math.floor(data["main"].temp - 273)}  <sup>o</sup>C</h1>
+                <h1> <i class="fa fa-indent"></i>${(data["main"].humidity)} humi.</h1>
+                <h1> <i class="fa fa-stethoscope"></i>${(data["main"].pressure)} pascal</h1>
+                <h1> <i class="fa fa-eye"></i>${(data["visibility"])} metres</h1>
+                <h1> <i class="fa fa-cloud"></i>${(data["wind"]).speed}  km/hours</h1>
+
+                </div>`
+                let container2 = document.querySelector(".container2")
+                container2.innerHTML = result
+            })
+            .catch(err => alert("invalid city name"))
+
+
+    })
+</script>
+
+</html>
